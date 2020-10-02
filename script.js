@@ -1,52 +1,52 @@
-$(document).ready(function() {
+var text = document.querySelector("#text-input");
+var saveBtn = document.querySelector(".saveBtn");
 
-    // checkTime():
-    checkTime();
+saveBtn.addEventListener("click", function(event) {
+    event.preventDefault();
 
-    // local storage function goes here:
-    function storageUnit(){
-        var descriptiveText = $(this).siblings(".description").val();
-        var time = $(this).parent().attr("id");
-        localStorage.setTime(time,descriptiveText);
+    var plans = {
+        text: textInput.value.trim(),
+    };
+
+    if (plans.text === "") {
+        displayMessage("error", "Text area can't be blank homie");
+    } else {
+        displayMessage("successfully stored your plans!");
+
+        localStorage.setItem("plans", JSON.stringify(plans));
+
+        // get most recent submission
+        var lastPlans = JSON.parse(localStorage.getItem("plans"));
+        plansTextSpan.textContent = lastPlans.text;
     }
 
-    function checkTime(){
-        var timeTable = moment().hours();
-        $(".time-block").each(function() {
-            var id = $(this).attr("id");
-            if(id == timeTable){
-                $(this).addClass("present")
-            }else if(id < timeTable) {
-                $(this).addClass("past")
-            }else {
-                $(this).addClass("future")
-            }
-    
-            }
-        )
-    }      
+})
 
+$(document).ready(function () {
+    // checkTime():
+    var presentDay = moment().format('MMMM Do YYYY');
+    $("#currentDay").append(presentDay);
 
-    $("#currentDay").text(moment().format("dddd, MMMM Do YYYY, h:mm:ss a"));
+    $(".row").each(function () {
+        var hour = $(this).attr("name");
+        console.log(hour);
+        var hourInt = parseInt(hour)
+        var currentHour = moment().hours()
+        console.log(currentHour);
 
-    // storageUnit comms
+        if (currentHour > hourInt) {
+            $(this).children(".description").addClass("past")
 
-    $("#8 .description").val(localStorage.getItem("8"))
-    $("#9 .description").val(localStorage.getItem("9"))
-    $("#10 .description").val(localStorage.getItem("10"))
-    $("#11 .description").val(localStorage.getItem("11"))
-    $("#12 .description").val(localStorage.getItem("12"))
-    $("#13 .description").val(localStorage.getItem("13"))
-    $("#14 .description").val(localStorage.getItem("14"))
-    $("#15 .description").val(localStorage.getItem("15"))
-    $("#16 .description").val(localStorage.getItem("16"))
-    $("#17 .description").val(localStorage.getItem("17"))
-    $("#18 .description").val(localStorage.getItem("18"))
-    $("#19 .description").val(localStorage.getItem("19"))
+        }
+        else if (currentHour < hourInt) {
+            $(this).children(".description").addClass("future")
+            console.log(this)
+        }
 
+        else {
+            $(this).children(".description").addClass("present")
+            console.log(this)
+        }
 
-    // Onclick stuff
-
-    $(".saveBtn").on("click", storageUnit);
-
+    })
 })
